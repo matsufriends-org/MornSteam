@@ -23,7 +23,7 @@ namespace MornSteam
                     Debug.LogWarning("[Steamworks.NET] MornSteamManagerはプレイ中のみ有効です。");
                     return null;
                 }
-                
+
                 if (_instance == null)
                 {
                     return new GameObject(nameof(MornSteamManager)).AddComponent<MornSteamManager>();
@@ -33,6 +33,7 @@ namespace MornSteam
             }
         }
         public static bool Initialized => Instance?._isInitialized ?? false;
+        public static string UserId => SteamUser.GetSteamID().ToString();
         private SteamAPIWarningMessageHook_t _steamAPIWarningMessageHook;
 
         [AOT.MonoPInvokeCallback(typeof(SteamAPIWarningMessageHook_t))]
@@ -67,7 +68,6 @@ namespace MornSteam
             _instance = this;
             transform.SetParent(null);
             DontDestroyOnLoad(gameObject);
-            
             if (_everInitializeSucceed)
             {
                 Debug.Log("[Steamworks.NET] 初期化済みなのでスキップ");
@@ -151,13 +151,8 @@ namespace MornSteam
             SteamAPI.RunCallbacks();
         }
 #else
-    public static bool Initialized
-    {
-        get
-        {
-            return false;
-        }
-    }
+        public static bool Initialized => false;
+        public static CSteamID GetUserId => CSteamID.Nil.ToString();
 #endif
     }
 }
