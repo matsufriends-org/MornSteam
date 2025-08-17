@@ -2,6 +2,7 @@
 #if !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
 #define DISABLESTEAMWORKS
 #endif
+using System.Collections.Generic;
 using Steamworks;
 using UnityEngine;
 
@@ -150,9 +151,36 @@ namespace MornSteam
 
             SteamAPI.RunCallbacks();
         }
+
+        private static InputHandle_t[] _mInputHandles;
+        public static List<string> GetInputs()
+        {
+            if (_mInputHandles == null)
+            {
+                _mInputHandles = new InputHandle_t[Constants.STEAM_INPUT_MAX_COUNT];
+            }
+            
+            var result = new List<string>();
+            SteamInput.GetConnectedControllers(_mInputHandles);
+            foreach (var handle in _mInputHandles)
+            {
+                var inputType = SteamInput.GetInputTypeForHandle(handle);
+                if (inputType != ESteamInputType.k_ESteamInputType_Unknown)
+                {
+                    result.Add(inputType.ToString());
+                }
+            }
+            
+            return result;
+        }
 #else
         public static bool Initialized => false;
         public static CSteamID GetUserId => CSteamID.Nil.ToString();
+        public static List<string> GetInputs()
+        {
+            var result = new List<string>();
+            return result;
+        }
 #endif
     }
 }
