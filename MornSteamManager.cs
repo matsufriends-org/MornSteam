@@ -173,6 +173,41 @@ namespace MornSteam
             
             return result;
         }
+
+        public static bool TryGetAchievement(string label, out bool isUnlocked)
+        {
+            if (Initialized)
+            {
+                return SteamUserStats.GetAchievement(label, out isUnlocked);
+            }
+
+            isUnlocked = false;
+            return false;
+        }
+
+        public static void SetAchievement(string label)
+        {
+            if (Initialized)
+            {
+                if (SteamUserStats.RequestCurrentStats())
+                {
+                    SteamUserStats.SetAchievement(label);
+                    SteamUserStats.StoreStats();
+                }
+            }
+        }
+
+        public static void SetStat(string label, int value)
+        {
+            if (Initialized)
+            {
+                if (SteamUserStats.RequestCurrentStats())
+                {
+                    SteamUserStats.SetAchievement(label);
+                    SteamUserStats.StoreStats();
+                }
+            }
+        }
 #else
         public static bool Initialized => false;
         public static CSteamID GetUserId => CSteamID.Nil.ToString();
@@ -180,6 +215,17 @@ namespace MornSteam
         {
             var result = new List<string>();
             return result;
+        }
+        public static bool TryGetAchievement(string label, out bool isUnlocked)
+        {
+            isUnlocked = false;
+            return false;
+        }
+        public static void SetAchievement(string label)
+        {
+        }
+        public static void SetStat(string label, int value)
+        {
         }
 #endif
     }
