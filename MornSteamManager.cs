@@ -1,10 +1,13 @@
 // ref :https://github.com/rlabrecque/Steamworks.NET-SteamManager
-#if !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
+#if !USE_STEAM || !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
 #define DISABLESTEAMWORKS
 #endif
 using System.Collections.Generic;
-using Steamworks;
 using UnityEngine;
+
+#if !DISABLESTEAMWORKS
+using Steamworks;
+#endif
 
 namespace MornSteam
 {
@@ -210,7 +213,7 @@ namespace MornSteam
         }
 #else
         public static bool Initialized => false;
-        public static CSteamID GetUserId => CSteamID.Nil.ToString();
+        public static string UserId => "";
         public static List<string> GetInputs()
         {
             var result = new List<string>();
